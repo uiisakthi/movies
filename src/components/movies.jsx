@@ -16,9 +16,24 @@ class Movies extends Component {
     selectedGenreId: "__all__",
   };
 
+  sort = (movies, sortOrder) => {
+    const order = sortOrder === "asc" ? 1 : -1;
+    const sortedMovies = movies.sort(
+      (movie1, movie2) => order * movie1.title.localeCompare(movie2.title)
+    );
+    return sortedMovies;
+  };
+
   componentDidMount() {
     const allGenres = { _id: "__all__", name: "All Genres" };
-    this.setState({ movies: getMovies(), genres: [allGenres, ...getGenres()] });
+    const sortOrder = "asc";
+    const movies = this.sort(getMovies(), sortOrder);
+
+    this.setState({
+      movies,
+      sortOrder,
+      genres: [allGenres, ...getGenres()],
+    });
   }
 
   handleLike = (id) => {
@@ -45,8 +60,15 @@ class Movies extends Component {
     this.setState({ selectedGenreId });
   };
 
+  handleSort = () => {
+    const sortOrder = this.state.sortOrder === "asc" ? "desc" : "asc";
+    const movies = this.sort(this.state.movies, sortOrder);
+    this.setState({ movies, sortOrder });
+  };
+
   render() {
-    const { movies, genres, pageNumber, selectedGenreId } = this.state;
+    const { movies, genres, pageNumber, selectedGenreId, sortOrder } =
+      this.state;
     const itemsPerPage = 5;
 
     const filteredMovies = movies.filter(
@@ -70,6 +92,8 @@ class Movies extends Component {
             data={finalMovies}
             onLike={this.handleLike}
             onDelete={this.handleDelete}
+            onSort={this.handleSort}
+            sortOrder={sortOrder}
           />
           <Paginate
             count={count}

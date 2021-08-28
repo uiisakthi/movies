@@ -8,8 +8,6 @@ const ListGroup = ({
   idField,
   nameField,
 }) => {
-  console.log("IdField:" + idField);
-  console.log("nameField:" + nameField);
   const getClass = (itemId) =>
     itemId === selectedItem ? "list-group-item active" : "list-group-item";
   return (
